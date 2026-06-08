@@ -9,8 +9,15 @@ const commands = [
     {
         name: 'ping',
         description: 'Replies with Pong!'
+    },
+    {
+        name: 'upload',
+        description: 'Upload an EPUB book',
+
     }
 ];
+
+
 
 const rest = new REST({
     version: '10'
