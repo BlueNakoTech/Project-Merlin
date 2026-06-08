@@ -6,6 +6,7 @@ node_modules/
 service-account.json
 .env
 
+
 # Ignore image assets
 assets/images/
 
