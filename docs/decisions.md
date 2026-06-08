@@ -2,33 +2,53 @@
 
 ## 2026-06-08
 
-Decision:
-Project naming convention.
+Decision
 
-Result:
+Project name:
 
 Project Merlin
-├── Merlin Codex
-├── Merlin Archive
-└── Merlin Portal
 
-Reason:
-Consistent branding.
+Components:
+
+- Merlin Codex
+- Merlin Archive
+
+Reason
+
+Unified branding.
+
+Status
+
+Accepted
 
 ---
 
 ## 2026-06-08
 
-Decision:
-Discord as primary interface.
+Decision
 
-Reason:
+Discord-first architecture.
+
+Reason
+
 Target users already use Discord.
 
-Alternatives:
+Status
 
-- Telegram
-- Web only
+Accepted
 
-Status:
+---
+
+## 2026-06-08
+
+Decision
+
+EPUB library instead of bookstore.
+
+Reason
+
+Reduce scope and complexity.
+
+Status
+
 Accepted

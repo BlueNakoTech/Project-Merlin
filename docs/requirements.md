@@ -1,47 +1,56 @@
 # Functional Requirements
 
-## Books
+## Book Management
 
-### FR-001 Add Book
+### FR-001 Upload EPUB
 
-Librarian can add a book.
+Authorized users can upload EPUB files.
 
-### FR-002 Search Book
+### FR-002 Edit Metadata
 
-User can search by:
+Authorized users can edit book information.
+
+### FR-003 Delete Book
+
+Authorized users can remove books.
+
+## Search
+
+### FR-010 Search by Title
+
+Users can search by title.
+
+### FR-011 Search by Author
+
+Users can search by author.
+
+### FR-012 Search by Tags
+
+Users can search by tags.
+
+## Download
+
+### FR-020 Download Book
+
+Users can retrieve EPUB files.
+
+## Permissions
+
+### FR-030 User Roles
+
+Support:
+
+- Admin
+- Librarian
+- User
+
+## Metadata
+
+Store:
 
 - Title
 - Author
-- ISBN
-
-### FR-003 Update Book
-
-Librarian can modify metadata.
-
----
-
-## Members
-
-### FR-010 Register Member
-
-Create member profile.
-
-### FR-011 Suspend Member
-
-Prevent borrowing.
-
----
-
-## Borrowing
-
-### FR-020 Borrow Book
-
-Track checkout date.
-
-### FR-021 Return Book
-
-Track return date.
-
-### FR-022 Overdue Detection
-
-Mark overdue books.
+- Description
+- Category
+- Tags
+- Cover Image

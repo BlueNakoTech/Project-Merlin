@@ -2,29 +2,27 @@
 
 ## v0.1 MVP
 
-- Discord bot
+- Upload EPUB
+- Store metadata
 - Search books
-- Add books
-
----
+- Download books
 
 ## v0.2
 
-- Borrow books
-- Return books
-- QR code generation
-
----
+- Categories
+- Tags
+- Cover images
+- Role permissions
 
 ## v0.3
 
+- Advanced search
+- Statistics
+- Recently added books
+
+## Future Ideas
+
 - Web dashboard
-- User authentication
-
----
-
-## v1.0
-
-- Production release
-- Reporting
-- Analytics
+- Reading lists
+- Book recommendations
+- Multi-server support

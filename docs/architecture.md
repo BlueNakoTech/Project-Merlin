@@ -9,39 +9,32 @@ Discord Bot
 Responsibilities:
 
 - User commands
-- Notifications
 - Search interface
-
----
+- Upload workflow
+- Download workflow
+- Permission checking
 
 ### Merlin Archive
 
-Backend API
+Backend Service
 
 Responsibilities:
 
-- Data storage
-- Business logic
-- Authentication
+- Store metadata
+- Store file references
+- Search indexing
+- User management
 
----
-
-### Merlin Portal
-
-Web Dashboard
-
-Responsibilities:
-
-- Administration
-- Reports
-- Inventory management
-
-## System Diagram
+## System Flow
 
 User
 ↓
 Merlin Codex
 ↓
 Merlin Archive
+↓
+Database
+
+EPUB Files
 ↑
-Merlin Portal
+Merlin Archive

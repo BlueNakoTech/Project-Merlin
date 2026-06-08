@@ -2,37 +2,49 @@
 
 ## Overview
 
-Project Merlin is a library and bookstore management platform.
+Project Merlin is a Discord-first digital library platform.
 
-It provides:
+Users can upload, organize, search, and download EPUB books through Discord.
 
-- Discord integration via Merlin Codex
-- Central data management via Merlin Archive
-- Administrative dashboard via Merlin Portal
+The project consists of:
+
+- Merlin Codex (Discord Bot)
+- Merlin Archive (Storage and Metadata Service)
 
 ## Problem Statement
 
-Small libraries and bookstores often rely on spreadsheets or paper records.
+Managing a collection of EPUB books in Discord is difficult.
 
-Project Merlin aims to provide a simple digital solution.
+Books become buried in channels, difficult to search, and hard to organize.
+
+Project Merlin provides a centralized searchable library.
 
 ## Goals
 
-- Book inventory management
-- Borrowing management
-- Member management
-- QR code integration
-- Discord accessibility
+- Store EPUB files
+- Store book metadata
+- Search books
+- Download books
+- Organize books by category and tags
+- Operate entirely through Discord
+
+# If a feature does not directly help users upload, organize, search, or download EPUB books, it should be considered out of scope until after v1.0.
 
 ## Non-Goals
 
-- Ebook reader
-- Payment processing
-- Multi-tenant deployment (v1)
+- Book sales
+- Payments
+- Borrowing system
+- Physical inventory
+- E-book reader
+- Mobile application
+- Recommendation AI
 
 ## Success Criteria
 
-- Search books in Discord
-- Borrow and return books
-- Track inventory
-- Generate reports
+A user can:
+
+1. Upload an EPUB
+2. Search for a book
+3. View metadata
+4. Download the EPUB

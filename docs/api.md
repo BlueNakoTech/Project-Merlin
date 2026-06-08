@@ -2,34 +2,34 @@
 
 ## Books
 
-### GET /books
+GET /books
 
-Retrieve books.
+List books.
 
-### GET /books/:id
+GET /books/{id}
 
-Retrieve a specific book.
+Get book details.
 
-### POST /books
+POST /books
 
-Create book.
+Create book entry.
 
-### PUT /books/:id
+PUT /books/{id}
 
-Update book.
+Update metadata.
 
-### DELETE /books/:id
+DELETE /books/{id}
 
 Delete book.
 
----
+## Search
 
-## Members
+GET /search?q=
 
-### GET /members
+Search books.
 
-List members.
+## Users
 
-### POST /members
+GET /users/{discordId}
 
-Create member.
+Retrieve user information.
