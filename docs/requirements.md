@@ -54,3 +54,32 @@ Store:
 - Category
 - Tags
 - Cover Image
+
+## Permissions
+
+### FR-030 Roles
+
+Supported roles:
+
+- Admin
+- User
+
+### FR-031 Upload Permission
+
+Only Admin users may upload EPUB files.
+
+### FR-032 Edit Permission
+
+Only Admin users may modify book metadata.
+
+### FR-033 Delete Permission
+
+Only Admin users may delete books.
+
+### FR-034 Download Permission
+
+All users may download books.
+
+### FR-035 Search Permission
+
+All users may search books.

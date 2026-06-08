@@ -1,0 +1,32 @@
+{
+  "name": "project-merlin",
+  "version": "1.0.0",
+  "description": "Project Merlin is a Discord-first digital library platform",
+  "keywords": [
+    "MERLINONE"
+  ],
+  "homepage": "https://github.com/BlueNakoTech/Project-Merlin#readme",
+  "bugs": {
+    "url": "https://github.com/BlueNakoTech/Project-Merlin/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/BlueNakoTech/Project-Merlin.git"
+  },
+  "license": "ISC",
+  "author": "BlueNakoTech",
+  "type": "commonjs",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "discord.js": "^14.26.4",
+    "dotenv": "^17.4.2",
+    "firebase": "^12.14.0",
+    "firebase-admin": "^13.10.0"
+  }
+}

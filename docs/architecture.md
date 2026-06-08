@@ -6,6 +6,9 @@
 
 Discord Bot
 
+Description:
+📚 Merlin Codex is the Discord interface for Project Merlin, providing access to the Merlin Archive for searching and downloading EPUB
+
 Responsibilities:
 
 - User commands

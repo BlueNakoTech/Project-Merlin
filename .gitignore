@@ -1,0 +1,15 @@
+# Ignore dependency folders
+node_modules/
+
+
+# Ignore local configuration and secrets
+service-account.json
+config.json
+
+
+# Ignore image assets
+assets/images/
+
+
+
+
