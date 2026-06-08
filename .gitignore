@@ -5,6 +5,7 @@ node_modules/
 # Ignore local configuration and secrets
 service-account.json
 config.json
+.env
 
 
 # Ignore image assets
