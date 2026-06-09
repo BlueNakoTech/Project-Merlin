@@ -7,7 +7,8 @@ const {
     Client,
     Collection,
     GatewayIntentBits,
-    Events
+    Events,
+    MessageFlags
 } = require('discord.js');
 
 const client = new Client({
@@ -44,7 +45,7 @@ client.on(Events.InteractionCreate, async interaction => {
 
         await interaction.reply({
             content: 'Command failed.',
-            ephemeral: true,
+            flags: MessageFlags.Ephemeral,
         });
     }
 });

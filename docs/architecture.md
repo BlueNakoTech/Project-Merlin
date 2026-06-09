@@ -30,14 +30,14 @@ Responsibilities:
 
 ## System Flow
 
-User
-↓
 Merlin Codex
 ↓
-Merlin Archive
+Firestore
 ↓
-Database
+Book Metadata
 
-EPUB Files
-↑
-Merlin Archive
+Merlin Codex
+↓
+Google Drive API
+↓
+EPUB Storage

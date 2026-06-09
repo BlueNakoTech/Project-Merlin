@@ -1,162 +1,132 @@
 const db = require('../firebase/firestore');
 
-/**
- * Upload a new book
- */
-async function uploadBook({
+function extractGoogleDriveId(url) {
+
+    let match = url.match(/\/d\/([^/]+)/);
+
+    if (match) {
+        return match[1];
+    }
+
+    match = url.match(/[?&]id=([^&]+)/);
+
+    if (match) {
+        return match[1];
+    }
+
+    return null;
+}
+
+async function generateBookId() {
+
+    const counterRef =
+        db.collection('system')
+            .doc('bookCounter');
+
+    const counterDoc =
+        await counterRef.get();
+
+    let nextNumber = 1;
+
+    if (counterDoc.exists) {
+
+        nextNumber =
+            counterDoc.data().value + 1;
+
+    }
+
+    await counterRef.set({
+        value: nextNumber
+    });
+
+    return `MER-${String(nextNumber).padStart(6, '0')}`;
+}
+
+async function addBook({
     title,
     author,
-    description = '',
-    tags = [],
-    archiveMessage,
+    synopsis,
+    url,
+    coverUrl,
     uploadedBy
 }) {
 
-    // Check duplicate
-    const duplicateSnapshot = await db
-        .collection('books')
-        .where('title', '==', title)
-        .where('author', '==', author)
-        .limit(1)
-        .get();
-
-    if (!duplicateSnapshot.empty) {
+    if (!url.includes('drive.google.com')) {
         throw new Error(
-            `Book "${title}" by "${author}" already exists.`
+            'Only Google Drive URLs are allowed.'
         );
     }
 
+    const driveFileId =
+        extractGoogleDriveId(url);
+
+    if (!driveFileId) {
+        throw new Error(
+            'Invalid Google Drive URL.'
+        );
+    }
+
+    const duplicate =
+        await db.collection('books')
+            .where('title', '==', title)
+            .where('author', '==', author)
+            .limit(1)
+            .get();
+
+    if (!duplicate.empty) {
+        throw new Error(
+            'Book already exists.'
+        );
+    }
+
+    const bookId =
+        await generateBookId();
+
     const bookData = {
+
+        bookId,
+
         title,
         author,
-        description,
-        tags,
 
-        storage: {
-            guildId: archiveMessage.guildId,
-            channelId: archiveMessage.channelId,
-            messageId: archiveMessage.id,
-            attachmentUrl:
-                archiveMessage.attachments.first()?.url || null
-        },
+        synopsis,
+
+        coverUrl,
+
+        driveUrl: url,
+        driveFileId,
 
         uploadedBy,
+
         createdAt: new Date()
+
     };
-
-    const docRef = await db
-        .collection('books')
-        .add(bookData);
-
-    return {
-        id: docRef.id,
-        ...bookData
-    };
-}
-
-/**
- * Get a book by Firestore ID
- */
-async function getBookById(bookId) {
-
-    const doc = await db
-        .collection('books')
-        .doc(bookId)
-        .get();
-
-    if (!doc.exists) {
-        return null;
-    }
-
-    return {
-        id: doc.id,
-        ...doc.data()
-    };
-}
-
-/**
- * Delete a book
- */
-async function deleteBook(bookId) {
-
-    const doc = await db
-        .collection('books')
-        .doc(bookId)
-        .get();
-
-    if (!doc.exists) {
-        throw new Error('Book not found.');
-    }
 
     await db
         .collection('books')
         .doc(bookId)
-        .delete();
+        .set(bookData);
 
-    return true;
+    return bookData;
 }
 
-/**
- * Search books by title
- */
-async function searchBooks(searchTerm) {
+async function getBook(bookId) {
 
-    const snapshot = await db
-        .collection('books')
-        .get();
+    const doc =
+        await db.collection('books')
+            .doc(bookId)
+            .get();
 
-    const books = [];
+    if (!doc.exists) {
+        throw new Error(
+            'Book not found.'
+        );
+    }
 
-    snapshot.forEach(doc => {
-
-        const data = doc.data();
-
-        if (
-            data.title
-                .toLowerCase()
-                .includes(searchTerm.toLowerCase())
-        ) {
-
-            books.push({
-                id: doc.id,
-                ...data
-            });
-
-        }
-
-    });
-
-    return books;
-}
-
-/**
- * List all books
- */
-async function listBooks() {
-
-    const snapshot = await db
-        .collection('books')
-        .orderBy('createdAt', 'desc')
-        .get();
-
-    const books = [];
-
-    snapshot.forEach(doc => {
-
-        books.push({
-            id: doc.id,
-            ...doc.data()
-        });
-
-    });
-
-    return books;
+    return doc.data();
 }
 
 module.exports = {
-    uploadBook,
-    getBookById,
-    deleteBook,
-    searchBooks,
-    listBooks
+    addBook,
+    getBook
 };
