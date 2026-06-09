@@ -15,9 +15,16 @@ module.exports = {
 
         .addStringOption(option =>
             option
-                .setName('title')
-                .setDescription('Book title')
+                .setName('series')
+                .setDescription('Series name')
                 .setRequired(true))
+
+        .addIntegerOption(option =>
+            option
+                .setName('volume')
+                .setDescription('Volume number')
+                .setRequired(true))
+
 
         .addStringOption(option =>
             option
@@ -43,6 +50,12 @@ module.exports = {
                 .setDescription('Book cover image')
                 .setRequired(true))
 
+        .addStringOption(option =>
+            option
+                .setName('title')
+                .setDescription('Volume title')
+                .setRequired(false))
+
         .setDefaultMemberPermissions(
             PermissionFlagsBits.Administrator
         ),
@@ -50,6 +63,12 @@ module.exports = {
     async execute(interaction) {
 
         try {
+
+            const series =
+                interaction.options.getString('series');
+
+            const volume =
+                interaction.options.getInteger('volume');
 
             const title =
                 interaction.options.getString('title');
@@ -77,21 +96,16 @@ module.exports = {
             }
 
             const book =
-                await bookService.addBook({
 
+                await bookService.addBook({
+                    series,
+                    volume,
                     title,
                     author,
-
                     synopsis,
-
                     url,
-
-                    coverUrl:
-                        cover.url,
-
-                    uploadedBy:
-                        interaction.user.id
-
+                    coverUrl: cover.url,
+                    uploadedBy: interaction.user.id
                 });
 
             await interaction.reply({

@@ -43,6 +43,8 @@ async function generateBookId() {
 }
 
 async function addBook({
+    series,
+    volume,
     title,
     author,
     synopsis,
@@ -68,14 +70,14 @@ async function addBook({
 
     const duplicate =
         await db.collection('books')
-            .where('title', '==', title)
-            .where('author', '==', author)
+            .where('series', '==', series)
+            .where('volume', '==', volume)
             .limit(1)
             .get();
 
     if (!duplicate.empty) {
         throw new Error(
-            'Book already exists.'
+            `${series} Volume ${volume} already exists.`
         );
     }
 
@@ -86,7 +88,14 @@ async function addBook({
 
         bookId,
 
+        series,
+
+        volume,
+
+        volumeLabel: `Volume ${volume}`,
+
         title,
+
         author,
 
         synopsis,
@@ -94,6 +103,7 @@ async function addBook({
         coverUrl,
 
         driveUrl: url,
+
         driveFileId,
 
         uploadedBy,
