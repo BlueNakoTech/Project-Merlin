@@ -136,7 +136,75 @@ async function getBook(bookId) {
     return doc.data();
 }
 
+async function getSeriesList() {
+
+    const snapshot =
+        await db.collection('books').get();
+
+    const seriesSet =
+        new Set();
+
+    snapshot.forEach(doc => {
+
+        const book =
+            doc.data();
+
+        if (book.series) {
+            seriesSet.add(book.series);
+        }
+
+    });
+
+    return [...seriesSet].sort();
+
+}
+
+async function getVolumes(series) {
+
+    const snapshot =
+        await db.collection('books')
+            .where(
+                'series',
+                '==',
+                series
+            )
+            .get();
+
+    const books = [];
+
+    snapshot.forEach(doc => {
+        books.push(doc.data());
+    });
+
+    books.sort(
+        (a, b) =>
+            a.volume - b.volume
+    );
+
+    return books;
+
+}
+
+async function getSeriesInfo(series) {
+
+    const snapshot =
+        await db.collection('books')
+            .where('series', '==', series)
+            .orderBy('volume')
+            .limit(1)
+            .get();
+
+    if (snapshot.empty) {
+        return null;
+    }
+
+    return snapshot.docs[0].data();
+
+}
 module.exports = {
+    getSeriesInfo,
     addBook,
-    getBook
+    getBook,
+    getSeriesList,
+    getVolumes
 };

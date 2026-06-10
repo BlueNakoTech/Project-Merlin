@@ -25,23 +25,10 @@ module.exports = {
                 .setDescription('Volume number')
                 .setRequired(true))
 
-
-        .addStringOption(option =>
-            option
-                .setName('author')
-                .setDescription('Book author')
-                .setRequired(true))
-
         .addStringOption(option =>
             option
                 .setName('url')
                 .setDescription('Google Drive URL')
-                .setRequired(true))
-
-        .addStringOption(option =>
-            option
-                .setName('synopsis')
-                .setDescription('Book synopsis')
                 .setRequired(true))
 
         .addAttachmentOption(option =>
@@ -55,6 +42,18 @@ module.exports = {
                 .setName('title')
                 .setDescription('Volume title')
                 .setRequired(false))
+        .addStringOption(option =>
+            option
+                .setName('synopsis')
+                .setDescription('Book synopsis')
+                .setRequired(false))
+
+        .addStringOption(option =>
+            option
+                .setName('author')
+                .setDescription('Book author')
+                .setRequired(false))
+
 
         .setDefaultMemberPermissions(
             PermissionFlagsBits.Administrator
@@ -70,22 +69,74 @@ module.exports = {
             const volume =
                 interaction.options.getInteger('volume');
 
-            const title =
+            let title =
                 interaction.options.getString('title');
 
-            const author =
+            let author =
                 interaction.options.getString('author');
 
             const url =
                 interaction.options.getString('url');
 
-            const synopsis =
+            let synopsis =
                 interaction.options.getString('synopsis');
 
-            const cover =
+            let cover =
                 interaction.options.getAttachment('cover');
 
+            if (volume === 1) {
+
+                if (!author) {
+                    throw new Error(
+                        'Author is required for Volume 1.'
+                    );
+                }
+
+                if (!synopsis) {
+                    throw new Error(
+                        'Synopsis is required for Volume 1.'
+                    );
+                }
+
+                if (!cover) {
+                    throw new Error(
+                        'Cover image is required for Volume 1.'
+                    );
+                }
+
+            } else {
+
+                const seriesInfo =
+                    await bookService.getSeriesInfo(
+                        series
+                    );
+
+                if (!seriesInfo) {
+
+                    throw new Error(
+                        `Volume 1 of "${series}" must exist first.`
+                    );
+
+                }
+
+                author =
+                    seriesInfo.author;
+
+                synopsis =
+                    seriesInfo.synopsis;
+
+                if (!title) {
+
+                    title =
+                        `Volume ${volume}`;
+
+                }
+
+            }
+
+
             if (
+                cover &&
                 !cover.contentType?.startsWith(
                     'image/'
                 )
@@ -104,7 +155,13 @@ module.exports = {
                     author,
                     synopsis,
                     url,
-                    coverUrl: cover.url,
+                    coverUrl:
+                        cover?.url ||
+                        (
+                            await bookService.getSeriesInfo(
+                                series
+                            )
+                        ).coverUrl,
                     uploadedBy: interaction.user.id
                 });
 
