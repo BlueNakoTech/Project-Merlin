@@ -1,13 +1,24 @@
-require('dotenv').config();
+
+require('dotenv').config({
+    path:
+        process.env.NODE_ENV === 'production'
+            ? '.env.prod'
+            : '.env.dev'
+});
 
 const fs = require('fs');
 const path = require('path');
+const selectMenuHandler =
+    require('./handlers/selectMenuHandler');
+
+
 
 const {
     Client,
     Collection,
     GatewayIntentBits,
-    Events
+    Events,
+    MessageFlags
 } = require('discord.js');
 
 const client = new Client({
@@ -28,25 +39,75 @@ client.once(Events.ClientReady, readyClient => {
     console.log(`Ready! Logged in as ${readyClient.user.tag}`);
 });
 
-client.on(Events.InteractionCreate, async interaction => {
-    if (!interaction.isChatInputCommand()) return;
+client.on(
+    Events.InteractionCreate,
+    async interaction => {
 
-    const command = client.commands.get(
-        interaction.commandName
-    );
+        try {
 
-    if (!command) return;
+            if (
+                interaction.isStringSelectMenu()
+            ) {
 
-    try {
-        await command.execute(interaction);
-    } catch (error) {
-        console.error(error);
+                return selectMenuHandler(
+                    interaction
+                );
 
-        await interaction.reply({
-            content: 'Command failed.',
-            ephemeral: true,
-        });
+            }
+
+            if (
+                !interaction.isChatInputCommand()
+            ) {
+                return;
+            }
+
+            const command =
+                client.commands.get(
+                    interaction.commandName
+                );
+
+            if (!command) {
+                return;
+            }
+
+            await command.execute(
+                interaction
+            );
+
+        } catch (error) {
+
+            console.error(error);
+
+            const replyData = {
+
+                content:
+                    'Command failed.',
+
+                flags:
+                    MessageFlags.Ephemeral
+
+            };
+
+            if (
+                interaction.replied ||
+                interaction.deferred
+            ) {
+
+                await interaction.followUp(
+                    replyData
+                );
+
+            } else {
+
+                await interaction.reply(
+                    replyData
+                );
+
+            }
+
+        }
+
     }
-});
+);
 
 client.login(process.env.DISCORD_TOKEN);

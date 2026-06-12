@@ -228,3 +228,185 @@ Restricting uploads prevents spam, duplicate entries, and copyright issues from 
 ### Status
 
 Accepted
+
+## 2026-06-09
+
+### Decision
+
+EPUB storage strategy revised.
+
+### Previous Decision
+
+Store EPUB files as Discord attachments and save attachment references in Firestore.
+
+### Result
+
+EPUB files will be stored in Google Drive.
+
+Firestore will store:
+
+- Book metadata
+- Google Drive File ID
+- Upload information
+
+### Example
+
+```json
+{
+  "bookId": "MER-000001",
+  "title": "Dune",
+  "author": "Frank Herbert",
+  "driveFileId": "1abcDEFxyz",
+  "uploadedBy": "123456789"
+}
+```
+
+### Reason
+
+Discord attachments are not intended to be a long-term storage solution.
+
+Potential issues include:
+
+- Message deletion
+- Channel deletion
+- Server deletion
+- Dependency on Discord message history
+
+Google Drive provides:
+
+- 15 GB free storage
+- Better file management
+- Independent storage lifecycle
+- Easier backup and migration
+
+### Alternatives Considered
+
+- Discord Attachments
+- Firebase Storage
+- Cloudflare R2
+
+### Status
+
+Accepted
+
+---
+
+## 2026-06-09
+
+### Decision
+
+Storage architecture.
+
+### Result
+
+Project Merlin will use:
+
+- Discord.js
+- Firestore
+- Google Drive API
+
+### Architecture
+
+```text
+Merlin Codex
+      ↓
+Firestore
+      ↓
+Book Metadata
+
+Merlin Codex
+      ↓
+Google Drive API
+      ↓
+EPUB Storage
+```
+
+### Status
+
+Accepted
+
+---
+
+## 2026-06-09
+
+### Decision
+
+File reference strategy.
+
+### Result
+
+Store Google Drive File IDs instead of download URLs.
+
+### Example
+
+```json
+{
+  "driveFileId": "1abcDEFxyz"
+}
+```
+
+### Reason
+
+Download URLs may change over time.
+
+Google Drive File IDs remain stable and can be used to generate download links when needed.
+
+### Status
+
+Accepted
+
+---
+
+## 2026-06-09
+
+### Decision
+
+Upload permissions.
+
+### Result
+
+Only administrators may:
+
+- Upload books
+- Edit metadata
+- Delete books
+
+Regular users may:
+
+- Search books
+- View metadata
+- Download books
+
+### Reason
+
+Project Merlin is intended to be a curated digital library rather than an open file-sharing platform.
+
+Restricting uploads prevents spam, duplicate entries, and uncontrolled submissions.
+
+### Status
+
+Accepted
+
+## 2026-06-09
+
+### Decision
+
+Google Drive integration approach.
+
+### Result
+
+EPUB files will be uploaded manually to Google Drive by administrators.
+
+Merlin Codex will store only metadata and Google Drive references in Firestore.
+
+### Reason
+
+Avoids the need for Google Drive API integration, Google Cloud billing configuration, and file transfer logic while keeping storage independent from Discord.
+
+### Status
+
+Accepted
+
+```
+
+```
