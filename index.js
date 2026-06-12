@@ -1,9 +1,17 @@
-require('dotenv').config();
+
+require('dotenv').config({
+    path:
+        process.env.NODE_ENV === 'production'
+            ? '.env.prod'
+            : '.env.dev'
+});
 
 const fs = require('fs');
 const path = require('path');
 const selectMenuHandler =
     require('./handlers/selectMenuHandler');
+
+
 
 const {
     Client,
