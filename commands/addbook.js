@@ -1,11 +1,14 @@
 const {
     SlashCommandBuilder,
     PermissionFlagsBits,
-    MessageFlags
+    MessageFlags,
+    EmbedBuilder
 } = require('discord.js');
 
 const bookService =
     require('../services/bookservice');
+
+
 
 module.exports = {
 
@@ -54,12 +57,24 @@ module.exports = {
                 .setDescription('Book author')
                 .setRequired(false))
 
+        .addStringOption(option =>
+            option
+                .setName('novelupdates')
+                .setDescription(
+                    'Novel Updates URL'
+                )
+                .setRequired(false))
+
 
         .setDefaultMemberPermissions(
             PermissionFlagsBits.Administrator
         ),
 
     async execute(interaction) {
+
+        await interaction.deferReply({
+            flags: MessageFlags.Ephemeral
+        });
 
         try {
 
@@ -81,8 +96,14 @@ module.exports = {
             let synopsis =
                 interaction.options.getString('synopsis');
 
-            let cover =
+            const cover =
                 interaction.options.getAttachment('cover');
+            let novelUpdatesUrl =
+                interaction.options.getString(
+                    'novelupdates'
+                );
+
+            let coverUrl = null;
 
             if (volume === 1) {
 
@@ -104,11 +125,41 @@ module.exports = {
                     );
                 }
 
+                if (
+                    !cover.contentType?.startsWith(
+                        'image/'
+                    )
+                ) {
+                    throw new Error(
+                        'Cover must be an image.'
+                    );
+                }
+
+                const coverChannel =
+                    await interaction.client.channels.fetch(
+                        process.env.COVER_CHANNEL_ID
+                    );
+
+                const archiveMessage =
+                    await coverChannel.send({
+                        content:
+                            `${series} Volume ${volume}`,
+                        files: [cover.url]
+                    });
+
+                coverUrl =
+                    archiveMessage
+                        .attachments
+                        .first()
+                        ?.url;
+
             } else {
 
                 const seriesInfo =
                     await bookService.getSeriesInfo(
                         series
+
+
                     );
 
                 if (!seriesInfo) {
@@ -119,70 +170,162 @@ module.exports = {
 
                 }
 
+                novelUpdatesUrl =
+                    novelUpdatesUrl ||
+                    seriesInfo.novelUpdatesUrl;
+
                 author =
                     seriesInfo.author;
 
                 synopsis =
                     seriesInfo.synopsis;
 
-                if (!title) {
+                if (cover) {
 
-                    title =
-                        `Volume ${volume}`;
+                    if (
+                        !cover.contentType?.startsWith(
+                            'image/'
+                        )
+                    ) {
+                        throw new Error(
+                            'Cover must be an image.'
+                        );
+                    }
+
+                    const coverChannel =
+                        await interaction.client.channels.fetch(
+                            process.env.COVER_CHANNEL_ID
+                        );
+
+                    const archiveMessage =
+                        await coverChannel.send({
+                            content:
+                                `${series} Volume ${volume}`,
+                            files: [cover.url]
+                        });
+
+                    coverUrl =
+                        archiveMessage
+                            .attachments
+                            .first()
+                            ?.url;
+
+                } else {
+
+                    // Fallback to Volume 1 cover
+                    coverUrl =
+                        seriesInfo.coverUrl;
 
                 }
 
             }
 
-
-            if (
-                cover &&
-                !cover.contentType?.startsWith(
-                    'image/'
-                )
-            ) {
-                throw new Error(
-                    'Cover must be an image.'
-                );
-            }
-
             const book =
-
                 await bookService.addBook({
+
                     series,
+
                     volume,
+
                     title,
+
                     author,
+
                     synopsis,
+
                     url,
-                    coverUrl:
-                        cover?.url ||
-                        (
-                            await bookService.getSeriesInfo(
-                                series
-                            )
-                        ).coverUrl,
-                    uploadedBy: interaction.user.id
+
+                    coverUrl,
+
+                    novelUpdatesUrl,
+
+                    uploadedBy:
+                        interaction.user.id
+
                 });
 
-            await interaction.reply({
+            await interaction.editReply({
 
                 content:
                     `✅ Book Added\n\n` +
                     `ID: ${book.bookId}\n` +
-                    `Title: ${book.title}\n` +
-                    `Author: ${book.author}`,
+                    `Series: ${book.series}\n` +
+                    `Volume: ${book.volume}`,
 
                 flags:
                     MessageFlags.Ephemeral
 
             });
 
+            const logChannel =
+                await interaction.client.channels.fetch(
+                    process.env.LOG_CHANNEL_ID
+                );
+
+            const logEmbed =
+                new EmbedBuilder()
+
+                    .setTitle('📚 Book Added')
+
+                    .setDescription(
+                        `**${book.series}** Volume ${book.volume}`
+                    )
+
+                    .addFields(
+                        {
+                            name: 'Book ID',
+                            value: book.bookId,
+                            inline: true
+                        },
+                        {
+                            name: 'Author',
+                            value: book.author,
+                            inline: true
+                        },
+                        {
+                            name: 'Uploader',
+                            value:
+                                `<@${interaction.user.id}>`,
+                            inline: true
+                        },
+                        {
+                            name: 'Google Drive',
+                            value:
+                                `[Open Book](${book.driveUrl})`
+                        }
+                    )
+
+                    .setThumbnail(
+                        book.coverUrl
+                    )
+
+                    .setTimestamp();
+
+            try {
+
+                const logChannel =
+                    await interaction.client.channels.fetch(
+                        process.env.LOG_CHANNEL_ID
+                    );
+
+                await logChannel.send({
+                    embeds: [logEmbed]
+                });
+
+            } catch (logError) {
+
+                console.error(
+                    'Failed to write log:',
+                    logError
+                );
+
+            }
+
         } catch (error) {
 
             console.error(error);
 
-            await interaction.reply({
+            await interaction.editReply({
 
                 content:
                     `❌ ${error.message}`,
@@ -193,6 +336,8 @@ module.exports = {
             });
 
         }
+
+
 
     }
 

@@ -50,6 +50,7 @@ async function addBook({
     synopsis,
     url,
     coverUrl,
+    novelUpdatesUrl,
     uploadedBy
 }) {
 
@@ -107,6 +108,7 @@ async function addBook({
         driveFileId,
 
         uploadedBy,
+        novelUpdatesUrl,
 
         createdAt: new Date()
 
@@ -189,16 +191,34 @@ async function getSeriesInfo(series) {
 
     const snapshot =
         await db.collection('books')
-            .where('series', '==', series)
-            .orderBy('volume')
-            .limit(1)
+            .where(
+                'series',
+                '==',
+                series
+            )
             .get();
 
     if (snapshot.empty) {
         return null;
     }
 
-    return snapshot.docs[0].data();
+    let firstBook = null;
+
+    snapshot.forEach(doc => {
+
+        const book =
+            doc.data();
+
+        if (
+            !firstBook ||
+            book.volume < firstBook.volume
+        ) {
+            firstBook = book;
+        }
+
+    });
+
+    return firstBook;
 
 }
 module.exports = {

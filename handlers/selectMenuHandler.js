@@ -74,11 +74,43 @@ module.exports =
 
                     );
 
-            const row =
+            const dropdownRow =
                 new ActionRowBuilder()
                     .addComponents(
                         volumeMenu
                     );
+
+            const components =
+                [dropdownRow];
+
+            if (seriesInfo.novelUpdatesUrl) {
+
+                const novelUpdatesButton =
+                    new ButtonBuilder()
+
+                        .setLabel(
+                            'Novel Updates'
+                        )
+
+                        .setStyle(
+                            ButtonStyle.Link
+                        )
+
+                        .setURL(
+                            seriesInfo.novelUpdatesUrl
+                        );
+
+                const buttonRow =
+                    new ActionRowBuilder()
+                        .addComponents(
+                            novelUpdatesButton
+                        );
+
+                components.unshift(
+                    buttonRow
+                );
+
+            }
 
             const embed =
                 new EmbedBuilder()
@@ -111,7 +143,7 @@ module.exports =
 
                 embeds: [embed],
 
-                components: [row],
+                components,
 
                 flags: MessageFlags.Ephemeral
             });
@@ -224,10 +256,36 @@ module.exports =
 
                 embeds: [embed],
 
-                components: [
-                    dropdownRow,
-                    buttonRow
-                ]
+                components: (() => {
+
+                    const rows = [];
+
+                    if (book.novelUpdatesUrl) {
+
+                        rows.push(
+                            new ActionRowBuilder()
+                                .addComponents(
+                                    new ButtonBuilder()
+                                        .setLabel(
+                                            'Novel Updates'
+                                        )
+                                        .setStyle(
+                                            ButtonStyle.Link
+                                        )
+                                        .setURL(
+                                            book.novelUpdatesUrl
+                                        )
+                                )
+                        );
+
+                    }
+
+                    rows.push(dropdownRow);
+                    rows.push(buttonRow);
+
+                    return rows;
+
+                })()
 
             });
 
