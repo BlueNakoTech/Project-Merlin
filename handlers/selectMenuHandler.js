@@ -40,14 +40,42 @@ module.exports =
 
             }
 
+            function formatSynopsis(text) {
+
+                const sentences =
+                    text.split('. ');
+
+                let result = '';
+
+                for (let i = 0; i < sentences.length; i++) {
+
+                    result += sentences[i];
+
+                    if (!sentences[i].endsWith('.')) {
+                        result += '.';
+                    }
+
+                    if ((i + 1) % 2 === 0) {
+                        result += '\n\n';
+                    } else {
+                        result += ' ';
+                    }
+
+                }
+
+                return result.trim();
+
+            }
+
             // Use first volume as series info
             const seriesInfo =
                 books[0];
 
             const synopsisPreview =
-                seriesInfo.synopsis?.length > 300
-                    ? seriesInfo.synopsis.slice(0, 300) + '...'
-                    : seriesInfo.synopsis || 'No synopsis available.';
+                formatSynopsis(
+                    seriesInfo.synopsis ||
+                    'No synopsis available.'
+                );
 
             const volumeMenu =
                 new StringSelectMenuBuilder()
@@ -100,15 +128,7 @@ module.exports =
                             seriesInfo.novelUpdatesUrl
                         );
 
-                const buttonRow =
-                    new ActionRowBuilder()
-                        .addComponents(
-                            novelUpdatesButton
-                        );
 
-                components.unshift(
-                    buttonRow
-                );
 
             }
 
@@ -116,7 +136,13 @@ module.exports =
                 new EmbedBuilder()
 
                     .setTitle(
-                        `📚 ${seriesInfo.series}`
+                        `📚 \\|\\| ${seriesInfo.series} \\|\\|`
+                    )
+                    .setURL(seriesInfo.novelUpdatesUrl)
+                    .setDescription(
+                        synopsisPreview)
+                    .setThumbnail(
+                        seriesInfo.coverUrl
                     )
 
                     .addFields(
@@ -130,14 +156,13 @@ module.exports =
                             inline: true
                         },
                         {
-                            name: '📖 Synopsis',
-                            value: synopsisPreview
+                            name: '🔗 Links',
+                            value: `[Novel Updates](${seriesInfo.novelUpdatesUrl})`
                         }
-                    )
 
-                    .setImage(
-                        seriesInfo.coverUrl
                     );
+
+
 
             return interaction.reply({
 
@@ -233,7 +258,7 @@ module.exports =
                 new EmbedBuilder()
 
                     .setTitle(
-                        `${book.series} - Volume ${book.volume}`
+                        `${book.series}`
                     )
 
                     .setDescription(
@@ -260,25 +285,23 @@ module.exports =
 
                     const rows = [];
 
-                    if (book.novelUpdatesUrl) {
+                    // if (book.novelUpdatesUrl) {
 
-                        rows.push(
-                            new ActionRowBuilder()
-                                .addComponents(
-                                    new ButtonBuilder()
-                                        .setLabel(
-                                            'Novel Updates'
-                                        )
-                                        .setStyle(
-                                            ButtonStyle.Link
-                                        )
-                                        .setURL(
-                                            book.novelUpdatesUrl
-                                        )
-                                )
-                        );
+                    //     rows.push(
+                    //         new ActionRowBuilder()
+                    //             .addComponents(
+                    //                 new ButtonBuilder()
+                    //                     .setLabel(
+                    //                         'Novel Updates'
+                    //                     )
+                    //                     .setStyle(
+                    //                         ButtonStyle.Link
+                    //                     )
 
-                    }
+                    //             )
+                    //     );
+
+                    // }
 
                     rows.push(dropdownRow);
                     rows.push(buttonRow);
