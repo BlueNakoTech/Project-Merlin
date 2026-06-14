@@ -221,10 +221,41 @@ async function getSeriesInfo(series) {
     return firstBook;
 
 }
+
+async function getNewestSeries(limit = 3) {
+
+    const snapshot =
+        await db.collection('books')
+            .where('volume', '==', 1)
+            .orderBy('createdAt', 'desc')
+            .limit(limit)
+            .get();
+
+    return snapshot.docs.map(
+        doc => doc.data()
+    );
+
+}
+
+async function getAllSeries() {
+
+    const snapshot =
+        await db
+            .collection('books')
+            .where('volume', '==', 1)
+            .get();
+
+    return snapshot.docs
+        .map(doc => doc.data().series)
+        .sort();
+
+}
 module.exports = {
     getSeriesInfo,
     addBook,
     getBook,
     getSeriesList,
+    getNewestSeries,
+    getAllSeries,
     getVolumes
 };

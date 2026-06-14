@@ -11,7 +11,10 @@ const path = require('path');
 const selectMenuHandler =
     require('./handlers/selectMenuHandler');
 
-
+const recentSeriesHandler =
+    require(
+        './handlers/recentSerieshandler'
+    );
 
 const {
     Client,
@@ -52,6 +55,8 @@ client.on(
                 return selectMenuHandler(
                     interaction
                 );
+
+
 
             }
 

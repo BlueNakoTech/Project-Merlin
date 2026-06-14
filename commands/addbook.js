@@ -244,6 +244,24 @@ module.exports = {
 
                 });
 
+            const updateRecentSeries =
+                require('../utils/updateRecentSeriesPanel');
+
+            const updateLibraryPanel =
+                require('../utils/updateLibraryPanel');
+
+            if (volume === 1) {
+
+                await updateRecentSeries(
+                    interaction.client
+                );
+
+                await updateLibraryPanel(
+                    interaction.client
+                );
+
+            }
+
             await interaction.editReply({
 
                 content:

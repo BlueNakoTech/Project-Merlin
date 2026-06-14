@@ -10,8 +10,27 @@ const {
 const bookService =
     require('../services/bookservice');
 
+const recentSeriesHandler =
+    require('./recentSerieshandler');
+
 module.exports =
     async interaction => {
+
+        // ======================
+        // RECENT SERIES PANEL
+        // ======================
+
+
+        if (
+            interaction.customId ===
+            'recent_series_select'
+        ) {
+
+            return recentSeriesHandler(
+                interaction
+            );
+
+        }
 
         // ======================
         // SERIES DROPDOWN
@@ -285,23 +304,7 @@ module.exports =
 
                     const rows = [];
 
-                    // if (book.novelUpdatesUrl) {
 
-                    //     rows.push(
-                    //         new ActionRowBuilder()
-                    //             .addComponents(
-                    //                 new ButtonBuilder()
-                    //                     .setLabel(
-                    //                         'Novel Updates'
-                    //                     )
-                    //                     .setStyle(
-                    //                         ButtonStyle.Link
-                    //                     )
-
-                    //             )
-                    //     );
-
-                    // }
 
                     rows.push(dropdownRow);
                     rows.push(buttonRow);
