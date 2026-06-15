@@ -266,12 +266,119 @@ async function getAllSeries() {
         .sort();
 
 }
+
+async function deleteBook(
+    bookId
+) {
+
+    const snapshot =
+        await db
+            .collection('books')
+            .where(
+                'bookId',
+                '==',
+                bookId
+            )
+            .limit(1)
+            .get();
+
+    if (
+        snapshot.empty
+    ) {
+
+        throw new Error(
+            'Book not found.'
+        );
+
+    }
+
+    await snapshot.docs[0]
+        .ref
+        .delete();
+
+}
+
+async function updateBook(
+    bookId,
+    updates
+) {
+
+    const snapshot =
+        await db
+            .collection('books')
+            .where(
+                'bookId',
+                '==',
+                bookId
+            )
+            .limit(1)
+            .get();
+
+    if (
+        snapshot.empty
+    ) {
+
+        throw new Error(
+            'Book not found.'
+        );
+
+    }
+
+    await snapshot.docs[0]
+        .ref
+        .update(updates);
+
+}
+
+async function updateSeries(
+    series,
+    updates
+) {
+
+    const snapshot =
+        await db
+            .collection('books')
+            .where(
+                'series',
+                '==',
+                series
+            )
+            .get();
+
+    if (
+        snapshot.empty
+    ) {
+
+        throw new Error(
+            'Series not found.'
+        );
+
+    }
+
+    const batch =
+        db.batch();
+
+    snapshot.docs.forEach(doc => {
+
+        batch.update(
+            doc.ref,
+            updates
+        );
+
+    });
+
+    await batch.commit();
+
+}
 module.exports = {
     getSeriesInfo,
     addBook,
     getBook,
     getSeriesList,
     getNewestSeries,
+    deleteBook,
+    updateSeries,
+    updateBook,
     getAllSeries,
     getVolumes
 };

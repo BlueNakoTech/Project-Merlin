@@ -1,19 +1,25 @@
 const db =
     require('../firebase/firestore');
 
-async function saveLibraryMessages({
+async function saveLibraryMessages(
 
-    channelId,
+    guildId,
 
-    recentMessageId,
+    {
 
-    libraryMessageId
+        channelId,
 
-}) {
+        recentMessageId,
+
+        libraryMessageId
+
+    }
+
+) {
 
     await db
         .collection('system')
-        .doc('library')
+        .doc(guildId)
         .set({
 
             channelId,
@@ -26,12 +32,14 @@ async function saveLibraryMessages({
 
 }
 
-async function getLibraryMessages() {
+async function getLibraryMessages(
+    guildId
+) {
 
     const doc =
         await db
             .collection('system')
-            .doc('library')
+            .doc(guildId)
             .get();
 
     if (!doc.exists) {

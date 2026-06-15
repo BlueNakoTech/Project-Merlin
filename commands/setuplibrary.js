@@ -26,6 +26,40 @@ module.exports = {
         await interaction.deferReply({
             flags: MessageFlags.Ephemeral
         });
+        if (
+            !interaction.member.permissions.has(
+                PermissionFlagsBits.Administrator
+            )
+        ) {
+
+            return interaction.reply({
+
+                content:
+                    'Administrator required.',
+
+                flags:
+                    MessageFlags.Ephemeral
+
+            });
+
+        }
+
+        // const existing =
+        //     await configService
+        //         .getLibraryMessages(
+        //             interaction.guild.id
+        //         );
+
+        // if (existing) {
+
+        //     return interaction.editReply({
+
+        //         content:
+        //             '❌ Library already configured.'
+
+        //     });
+
+        // }
 
         const channel =
             interaction.channel;
@@ -43,18 +77,26 @@ module.exports = {
             });
 
         await configService
-            .saveLibraryMessages({
+            .saveLibraryMessages(
 
-                channelId:
-                    interaction.channel.id,
+                interaction.guild.id,
 
-                recentMessageId:
-                    recentMessage.id,
+                {
 
-                libraryMessageId:
-                    libraryMessage.id
+                    channelId:
+                        interaction.channel.id,
 
-            });
+                    recentMessageId:
+                        recentMessage.id,
+
+                    libraryMessageId:
+                        libraryMessage.id
+
+                }
+
+            );
+
+
         await interaction.editReply({
 
             content:
@@ -69,11 +111,19 @@ module.exports = {
             require('../utils/updateLibraryPanel');
 
         await updateRecentSeries(
-            interaction.client
+
+            interaction.client,
+
+            interaction.guild.id
+
         );
 
         await updateLibraryPanel(
-            interaction.client
+
+            interaction.client,
+
+            interaction.guild.id
+
         );
     }
 

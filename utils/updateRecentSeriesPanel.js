@@ -8,11 +8,20 @@ const configService =
     require('../services/configservice');
 
 module.exports =
-    async client => {
+    async (
+        client,
+        guildId
+    ) => {
 
         const config =
             await configService
-                .getLibraryMessages();
+                .getLibraryMessages(
+                    guildId
+                );
+
+        if (!config) {
+            return;
+        }
 
         const channel =
             await client.channels.fetch(

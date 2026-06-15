@@ -12,16 +12,19 @@ const configService =
 const { content } = require('googleapis/build/src/apis/content');
 
 module.exports =
-    async client => {
+    async (
+        client,
+        guildId
+    ) => {
 
         const config =
             await configService
-                .getLibraryMessages();
+                .getLibraryMessages(
+                    guildId
+                );
 
         if (!config) {
-            throw new Error(
-                'Library configuration not found.'
-            );
+            return;
         }
 
         const channel =

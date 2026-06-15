@@ -102,6 +102,18 @@ module.exports = {
                 interaction.options.getString(
                     'novelupdates'
                 );
+            if (
+                novelUpdatesUrl &&
+                !novelUpdatesUrl.includes(
+                    'novelupdates.com'
+                )
+            ) {
+
+                throw new Error(
+                    'Novel Updates URL must come from novelupdates.com'
+                );
+
+            }
 
             let coverUrl = null;
 
