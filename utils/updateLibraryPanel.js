@@ -54,9 +54,9 @@ module.exports =
                         '',
                         `📖 Series Available: **${series.length}**`,
                         '',
-                        '📖 EPUB Library',
-                        '🔍 Organized by Series & Volume',
-                        '☁️ Cloud Hosted Downloads'
+                        // '📖 EPUB Library',
+                        // '🔍 Organized by Series & Volume',
+                        // '☁️ Cloud Hosted Downloads'
                     ].join('\n')
                 );
 

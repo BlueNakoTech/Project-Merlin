@@ -26,3 +26,8 @@
 - Reading lists
 - Book recommendations
 - Multi-server support
+
+## Future Optimization
+
+- Replace per-series volume counting queries with stored volumeCount field in Firestore.
+- Trigger update when /addbook successfully adds a new volume.

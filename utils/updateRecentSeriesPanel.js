@@ -26,8 +26,9 @@ module.exports =
 
         const books =
             await bookService.getNewestSeries(
-                2
+                3
             );
+        books.reverse();
 
         const embeds =
             books.map(book =>
@@ -39,27 +40,34 @@ module.exports =
                     )
 
                     .setURL(
-                        book.novelUpdatesUrl ||
-                        null
+                        book.novelUpdatesUrl || null
                     )
 
                     .setDescription(
-                        (book.synopsis || '')
-                            .slice(0, 250)
-                        + '...'
+                        book.synopsis
+                            ? `"${book.synopsis.slice(0, 100)}..."`
+                            : 'No synopsis available.'
                     )
 
-                    .addFields({
-                        name: 'Author',
-                        value: book.author
-                    })
+                    .addFields(
+                        {
+                            name: '✍️ Author',
+                            value: book.author,
+                            inline: true
+                        },
+                        {
+                            name: '🔗 More',
+                            value: `[Novel Updates](${book.novelUpdatesUrl})`,
+                            inline: true
+                        }
+
+                    )
 
                     .setThumbnail(
                         book.coverUrl
                     )
 
             );
-
         await message.edit({
             content:
                 '# 📚 Recently Added Series',

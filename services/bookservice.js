@@ -231,10 +231,26 @@ async function getNewestSeries(limit = 3) {
             .limit(limit)
             .get();
 
-    return snapshot.docs.map(
-        doc => doc.data()
-    );
+    const series = [];
 
+    for (const doc of snapshot.docs) {
+
+        const book = doc.data();
+
+        const volumeSnapshot =
+            await db.collection('books')
+                .where('series', '==', book.series)
+                .get();
+
+        series.push({
+            ...book,
+            totalVolumes:
+                volumeSnapshot.size
+        });
+
+    }
+
+    return series;
 }
 
 async function getAllSeries() {
