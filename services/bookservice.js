@@ -48,6 +48,9 @@ async function addBook({
     title,
     author,
     synopsis,
+
+    translator,
+    translatorUrl,
     url,
     coverUrl,
     novelUpdatesUrl,
@@ -107,6 +110,8 @@ async function addBook({
 
         driveFileId,
 
+        translator,
+        translatorUrl,
         uploadedBy,
         novelUpdatesUrl,
 

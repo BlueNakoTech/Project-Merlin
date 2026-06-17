@@ -64,6 +64,21 @@ module.exports = {
                     'Novel Updates URL'
                 )
                 .setRequired(false))
+        .addStringOption(option =>
+            option
+                .setName('translator')
+                .setDescription(
+                    'Translator or translation group'
+                )
+                .setRequired(false))
+
+        .addStringOption(option =>
+            option
+                .setName('translator_url')
+                .setDescription(
+                    'Translator website or social media'
+                )
+                .setRequired(false))
 
 
         .setDefaultMemberPermissions(
@@ -89,6 +104,16 @@ module.exports = {
 
             let author =
                 interaction.options.getString('author');
+
+            let translator =
+                interaction.options.getString(
+                    'translator'
+                );
+
+            let translatorUrl =
+                interaction.options.getString(
+                    'translator_url'
+                );
 
             const url =
                 interaction.options.getString('url');
@@ -191,6 +216,13 @@ module.exports = {
 
                 synopsis =
                     seriesInfo.synopsis;
+                translator =
+                    translator ||
+                    seriesInfo.translator;
+
+                translatorUrl =
+                    translatorUrl ||
+                    seriesInfo.translatorUrl;
 
                 if (cover) {
 
@@ -247,6 +279,10 @@ module.exports = {
 
                     url,
 
+                    translator,
+
+                    translatorUrl,
+
                     coverUrl,
 
                     novelUpdatesUrl,
@@ -287,10 +323,7 @@ module.exports = {
 
             });
 
-            const logChannel =
-                await interaction.client.channels.fetch(
-                    process.env.LOG_CHANNEL_ID
-                );
+
 
             const logEmbed =
                 new EmbedBuilder()

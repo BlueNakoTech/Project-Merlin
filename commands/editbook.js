@@ -87,6 +87,28 @@ module.exports = {
                 option =>
                     option
                         .setName(
+                            'translator'
+                        )
+                        .setDescription(
+                            'Translator or translation group'
+                        )
+            )
+
+            .addStringOption(
+                option =>
+                    option
+                        .setName(
+                            'translator_url'
+                        )
+                        .setDescription(
+                            'Translator website or social media'
+                        )
+            )
+
+            .addStringOption(
+                option =>
+                    option
+                        .setName(
                             'url'
                         )
                         .setDescription(
@@ -141,9 +163,23 @@ module.exports = {
                 'novelupdates'
             );
 
+        const translator =
+            interaction.options.getString(
+                'translator'
+            );
+
+        const translatorUrl =
+            interaction.options.getString(
+                'translator_url'
+            );
+
         const driveUrl =
             interaction.options.getString(
                 'url'
+            );
+        const cover =
+            interaction.options.getAttachment(
+                'cover'
             );
 
         if (title)
@@ -161,6 +197,21 @@ module.exports = {
         if (novelUpdatesUrl)
             updates.novelUpdatesUrl =
                 novelUpdatesUrl;
+
+        if (translator)
+            updates.translator =
+                translator;
+
+        if (translatorUrl)
+            updates.translatorUrl =
+                translatorUrl;
+
+        if (cover)
+            updates.coverUrl =
+                archiveMessage
+                    .attachments
+                    .first()
+                    ?.url;
 
         if (driveUrl)
             updates.driveUrl =
@@ -187,13 +238,22 @@ module.exports = {
                 updates
             );
 
-        await updateRecentSeries(
-            interaction.client
-        );
+        if (
+            updates.coverUrl ||
+            updates.title ||
+            updates.author ||
+            updates.novelUpdatesUrl
+        ) {
 
-        await updateLibraryPanel(
-            interaction.client
-        );
+            await updateRecentSeries(
+                interaction.client
+            );
+
+            await updateLibraryPanel(
+                interaction.client
+            );
+
+        }
 
         await interaction.reply({
 
